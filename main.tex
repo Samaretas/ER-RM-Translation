@@ -1,6 +1,8 @@
 \documentclass[class=book, crop=false, oneside]{standalone}
 \usepackage[subpreambles=true]{standalone}
 
+\usepackage{import}
+
 \graphicspath{{./assets/diagrams/}}
 
 \begin{document}
@@ -19,5 +21,48 @@ Let's start with this one:
 When we want to translate an ER diagram into an RM model we have to follow certain rules, let's check them out.
 \paragraph*{Rule \#1} every entity becomes a table and its attributes are the table's columns.
 \paragraph*{Rule \#2} each relation becomes a table and its attributes are part of the table's columns, also the keys of the entities involved in the relation become columns and they are flagged as Foreign Keys(FK).
+
+\vskip 20pt
+
+\begin{minipage}{0.45\textwidth}
+
+	\begin{table}[H]
+		\centering
+		\subimport{assets/tables/}{phc-pers.tex}
+	\end{table}
+
+\end{minipage}
+\hspace{.1\textwidth}
+\begin{minipage}{.45\textwidth}
+
+	\begin{table}[H]
+		\centering
+		\subimport{assets/tables/}{phc-cars}
+	\end{table}
+
+\end{minipage}
+
+\vskip 20pt
+\begin{minipage}{\textwidth}
+
+	\begin{table}[H]
+		\centering
+		\subimport{assets/tables/}{phc-has}
+	\end{table}
+
+	\end{minipage}
+	
+	\vskip 20pt
+
+	\begin{minipage}{\textwidth}
+
+		\begin{table}[H]
+			\centering
+			\subimport{assets/tables/}{phc-cars_v2}
+		\end{table}
+
+	\end{minipage}
+
+
 
 \end{document}
