@@ -18,9 +18,10 @@ Let's start with this classic:
 	\label{diagram1.00}
 \end{figure}
 
-When we want to translate an Entity Relation Diagram (ERD) into an Relation Model (RM) we have to follow certain rules, let's check them out.
-\paragraph*{Rule \#1} every entity becomes a table and its attributes are the table's columns.
-\paragraph*{Rule \#2} each relation becomes a table and its attributes are part of the table's columns; also the keys of the entities involved in the relation become columns and they are flagged as Foreign Keys(FK). The FKs must be the table Key.\\
+When we want to translate an Entity Relationship Diagram (ERD) into an Relation Model (RM) we have to follow certain rules, let's check them out.
+\paragraph*{Rule \#1} Every entity is a table and its attributes are the table's columns.
+\paragraph*{Rule \#2} Each relation is a table and its attributes are part of the table's columns; also the keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The FKs must be the table Key.\\
+
 Let's put this in practice:
 \vskip 20pt
 
@@ -49,12 +50,12 @@ Now it's time to draw the relation table:
 	HAS
 	\begin{table}[H]
 		\subimport{assets/tables/}{phc-has}
-		\texttt{HAS(\underline{CF} \underline{Targa}, Date)}
 	\end{table}
+	\texttt{HAS(\underline{CF} \underline{Targa}, Date)}
 \end{minipage}
 \vskip 20pt
 Well, that's clear. Now it's time to mix up things a little bit.
-What if we want that a car can't be owned by different people? (see \ref{diagram1.01})
+What if a car can't be owned by different people? (see \ref{diagram1.01})
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_01.png}
@@ -77,12 +78,11 @@ That's the representation in RM:
 \begin{minipage}{.8\textwidth}
 	CARS
 	\begin{table}[H]
-
 		\subimport{assets/tables/}{phc-cars_v2}
-		\texttt{CARS(\underline{Targa}, Brand, Color, CF, Date)}
-		\\CF not null
-		\\CF Foreign Key to PERSONS
 	\end{table}
+	\texttt{CARS(\underline{Targa}, Brand, Color, CF, Date)}\\
+	\texttt{	CF not null}\\
+	\texttt{	CF Foreign Key to PERSONS}
 \end{minipage}
 
 
