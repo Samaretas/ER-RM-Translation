@@ -13,9 +13,9 @@ Let's start with this classic:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1.png}
-	\caption{}
-	\label{diagram1}
+	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_00.png}
+	\caption{The classic example}
+	\label{diagram1.00}
 \end{figure}
 
 When we want to translate an Entity Relation Diagram (ERD) into an Relation Model (RM) we have to follow certain rules, let's check them out.
@@ -25,31 +25,64 @@ Let's put this in practice:
 \vskip 20pt
 
 \begin{minipage}{0.45\textwidth}
-	Persons
+	PERSONS
 	\begin{table}[H]
 		\centering
 		\subimport{assets/tables/}{phc-pers.tex}
 	\end{table}
-	\texttt{Persons(\underline{CF}, Name, Birth date)}
+	\texttt{PERSONS(\underline{CF}, Name, Birth date)}
 \end{minipage}
 \hspace{.1\textwidth}
 \begin{minipage}{.45\textwidth}
-	Cars
+	CARS
 	\begin{table}[H]
 		\centering
 		\subimport{assets/tables/}{phc-cars}
 	\end{table}
-	\texttt{Cars(\underline{Targa}, Brand, Color)}
+	\texttt{CARS(\underline{Targa}, Brand, Color)}
 \end{minipage}
 \vskip 20pt
 That was pretty easy, wasn't it?\\
 Now it's time to draw the relation table:
 \vskip 20pt
 \begin{minipage}{.7\textwidth}
-\begin{table}[H]
+	HAS
+	\begin{table}[H]
+		\subimport{assets/tables/}{phc-has}
+		\texttt{HAS(\underline{CF} \underline{Targa}, Date)}
+	\end{table}
+\end{minipage}
+\vskip 20pt
+Well, that's clear. Now it's time to mix up things a little bit.
+What if we want that a car can't be owned by different people? (see \ref{diagram1.01})
+\begin{figure}[H]
 	\centering
-	\subimport{assets/tables/}{phc-has}
-\end{table}
+	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_01.png}
+	\caption{A car now can have at most one owner}
+	\label{diagram1.01}
+\end{figure}
+We must use only the Targa as key in Has relation.
+% TODO inserire qua una tabella con la rappresentazione di ciò??
+\\
+And what if we want the car to have also at least one owner? (see \ref{diagram1_02})
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_02.png}
+	\caption{A car now can have at most one owner}
+	\label{diagram1_02}
+\end{figure}
+Now that a car must be owned by one person it has no more sense to keep HAS table and CARS table divided: the wittest solution is to delete HAS table and introduce in CARS table two columns, one for Date and one for CF, which will be a FK. Last but not least the CF field must be mapped as not-null.
+That's the representation in RM:
+\vskip 20pt
+\begin{minipage}{.8\textwidth}
+	CARS
+	\begin{table}[H]
+
+		\subimport{assets/tables/}{phc-cars_v2}
+		\texttt{CARS(\underline{Targa}, Brand, Color, CF, Date)}
+		\\CF not null
+		\\CF Foreign Key to PERSONS
+	\end{table}
 \end{minipage}
 
 
