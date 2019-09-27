@@ -26,7 +26,7 @@ When we want to translate an Entity Relationship Diagram (ERD) into a Relation M
 
 Let's put this in practice:
 \vskip 20pt
-
+f
 \begin{minipage}{0.45\textwidth}
 	PERSONS
 	\begin{table}[H]
@@ -144,7 +144,37 @@ The difference is:
 \end{itemize}
 
 \section{Let's talk about inheritance}
-It's time to see a little bit of inheritance, as always we're starting with an examples:
+It's time to see a little bit of inheritance, as always we're starting with an example:
+\begin{figure}[H]
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram2_00.png}
+	\caption{An example of inheritance}
+	\label{diagram2_00}
+\end{figure}
+There are three ways to translate ER inheritance into RM:
+\begin{enumerate}
+	\item The first approach is to have a different table for every entity, the tables of the children-entities will contain also the attributes inherited by the parent-entity.
+	\vskip 5pt
+	\texttt{FILMS(\underline{Title}, Duration)}\\
+	\texttt{CARTOONS(\underline{Title}, Duration, Voice)   Title FK to FILMS}\\
+	\texttt{MURDER(\underline{Title}, Duration, Weapon)   Title FK to FILMS}
+	\vskip 5pt
+	The bad aspect of this approach is that we store the different entity-types in different palces, for instance "Shrek" iss stored into CARTOONS table, therefore if we want to query the database by title and ask for "Shrek" we have to navigate trough all the three tables. Also if we want to query on how many films the database contains we will have to shearch in all the three tables.
+	\item The second approach is to have a different table for every entity, but the tables of the children-entities contain only their specific attributes and the Key attribute of the parent-entity, which will be also the child-entity Key (Foreign Key).
+	\vskip 5pt
+	\texttt{FILMS(\underline{Title}, Duration)}\\
+	\texttt{CARTOONS(\underline{Title}, Voice)   Title FK to FILMS}\\
+	\texttt{MURDER(\underline{Title}, Weapon)   Title FK to FILMS}
+	\vskip 5pt
+	This approach is better because all the entities are stored in the FILMS table and therefore if we're querying, for instance, title or duration, we have to look only in the FILMS table. The films that are cartoons, like Shrek are going to be registered also in the CARTOONS table, and there we will find their voice attribute.
+	The side effect of this approach is that when we query by, let's say, duration and voice we have to look into two different tables, and that's actually more complex than we need.
+	\item The third approach is to store all the films iin the same table with all the attributes of the parent-entity and the children-entities, these will be filled with a \emph{null} value if the film stored won't be a cartoon or a murder.
+	\vskip 5pt
+	\texttt{FILMS(\underline{Title}, Duration, Voice, Weapon)}\\
+	\texttt{Duration is not-null}\\
+	\texttt{Voice and Weapon can be null}
+	\vskip 5pt
+	Thinking in a querying way that's the best approach, for every research in the database you have to navigate only trough a table.
+\end{enumerate}
 
 \chapter{Translating RM into ER}
 
