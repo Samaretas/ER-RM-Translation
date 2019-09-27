@@ -7,18 +7,20 @@
 
 \begin{document}
 
-\chapter*{Translating ER into RM}
+% TODO create title wich will be something like (ER-RM translation with examples, taken form Mr. Yannis beautiful lessons)
+
+\chapter{Translating ER into RM}
 The best way to learn this mechanism is to poceed by examples.\\
 Let's start with this classic:
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_00.png}
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_00.png}
 	\caption{The classic example}
-	\label{diagram1.00}
+	\label{diagram1_00}
 \end{figure}
 
-When we want to translate an Entity Relationship Diagram (ERD) into an Relation Model (RM) we have to follow certain rules, let's check them out.
+When we want to translate an Entity Relationship Diagram (ERD) into a Relation Model (RM) we have to follow certain rules, let's check them out.
 \paragraph*{Rule \#1} Every entity is a table and its attributes are the table's columns.
 \paragraph*{Rule \#2} Each relation is a table and its attributes are part of the table's columns; also the keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The FKs must be the table Key.\\
 
@@ -55,24 +57,24 @@ Now it's time to draw the relation table:
 \end{minipage}
 \vskip 20pt
 Well, that's clear. Now it's time to mix up things a little bit.
-What if a car can't be owned by different people? (see \ref{diagram1.01})
+What if a car can't be owned by different people? (see \ref{diagram1_01})
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_01.png}
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_01.png}
 	\caption{A car now can have at most one owner}
-	\label{diagram1.01}
+	\label{diagram1_01}
 \end{figure}
-We must use only the Targa as key in Has relation.
+We must use only the Targa as key in HAS relation.
 % TODO inserire qua una tabella con la rappresentazione di ciò??
 \\
 And what if we want the car to have also at least one owner? (see \ref{diagram1_02})
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.9\textwidth,keepaspectratio]{diagram1_02.png}
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_02.png}
 	\caption{A car now can have at most one owner}
 	\label{diagram1_02}
 \end{figure}
-Now that a car must be owned by one person it has no more sense to keep HAS table and CARS table divided: the wittest solution is to delete HAS table and introduce in CARS table two columns, one for Date and one for CF, which will be a FK. Last but not least the CF field must be mapped as not-null.
+Now that a car must be owned by one (and only one) person it has no more sense to keep HAS table and CARS table divided: the smartest solution is to delete HAS table and introduce in CARS table two columns, one for Date and one for CF, which will be a FK. Last but not least the CF field must be mapped as \emph{not-null}.
 That's the representation in RM:
 \vskip 20pt
 \begin{minipage}{.8\textwidth}
@@ -84,20 +86,67 @@ That's the representation in RM:
 	\texttt{	CF not null}\\
 	\texttt{	CF Foreign Key to PERSONS}
 \end{minipage}
+\vskip 20pt
 
+Going back to diagram \ref{diagram1_00}, what if I want to keep in memory all the times somenoe rent the same car?
+Now I cannot do that because, being the Key,Targa cannot apear twice in the table.
+The solution here is to use also Date as a Key.
+But that's not fasiable because, as we stated in Rule \#2, only Keys of the entities are used as Key in the relation Table, and Date is not an entity; hence we have to redesign our diagram as
+\begin{figure}[H]
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_03.png}
+	\caption{Now Date is an entity}
+	\label{diagram1_03}
+\end{figure}
+\vskip 20pt
 
-% \begin{minipage}{\textwidth}
-% 	\vskip 20pt
-%
-% 	\begin{minipage}{\textwidth}
-%
-% 		\begin{table}[H]
-% 			\centering
-% 			\subimport{assets/tables/}{phc-cars_v2}
-% 		\end{table}
-%
-% 	\end{minipage}
+Now we want that every Rent must have an Insurance, so we have to create a new entity called Insurance and link it to the Rent relation as this:
+\begin{figure}[H]
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_04.png}
+	\caption{We added Insurance as an entity}
+	\texttt{RENT(\underline{Owner, Car, Name}, date)}\\
+		\texttt{Owner FK to PERSONS}\\
+		\texttt{Car FK to CARS}\\
+		\texttt{Name FK to INSURANCE}
+	\label{diagram1_04}
+\end{figure}
+\vskip 20pt
 
+And now we decide that the Insurance is no more necessary for a Rent, how do we set it as a field hat can be null?
+We have to link it to Rent with a relation, but we cant link two relations toghether: we must aggregate Persons, Rent and Car so that we can treat this set as an entity and then we can link to this new entity the Insurance with another relation (\ref{diagram1_05}).
+\begin{figure}[H]
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_05.png}
+	\caption{We added Insurance as an entity}
+	\label{diagram1_05}
+\end{figure}
+In this case what's going to be the key of Rent?
+\vskip 10pt
+\texttt{RENT(\underline{Owner, Car}, date)}\\
+	\texttt{Owner FK to PERSONS}\\
+	\texttt{Car FK to CARS}
+\vskip 10pt
+And which should be the Key of has?
+Keeping in mind Rule \#2 we deduct that the keys of a relation must be the keys of the entities involved,marked as Foreign Key, therefore:
+\vskip 10pt
+\texttt{HAS(\underline{Owner, Car, Name})}\\
+	\texttt{(Owner, Car) FK to RENT}\\
+	\texttt{Name FK to INSURANCE}
+\vskip 10pt
+And now the last question for this example: what's the difference between \ref{diagram1_04} and \ref{diagram1_06}?
+\begin{figure}[H]
+	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_06.png}
+	\caption{Note the particular form of the diagram}
+	\label{diagram1_06}
+\end{figure}
+The difference is:
+\begin{itemize}
+	\item In \ref{diagram1_04} you \emph{must} use Name as Key in RENT table, because Insurance is an entity involved in Rent relation (Rule \#2); therefore a person can rent the same car multiple times given that he uses a different insurance.\\
+	\item In \ref{diagram1_06} you don't have to use Name as Key in RENT table, therefore it is not possible for a person to rent the same car with two different insurances (even if the insurance changes the key remains the same).
+\end{itemize}
+
+\section{Let's talk about inheritance}
+It's time to see a little bit of inheritance, as always we're starting with an examples:
+
+\chapter{Translating RM into ER}
 
 
 \end{document}
