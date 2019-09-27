@@ -3,13 +3,15 @@
 
 \usepackage{import}
 
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
 \graphicspath{{./assets/diagrams/}}
 
 \begin{document}
 
 % TODO create title wich will be something like (ER-RM translation with examples, taken form Mr. Yannis beautiful lessons)
 
-\chapter{Translating ER into RM}
+\chapter*{Translating ER into RM}
 The best way to learn this mechanism is to poceed by examples.\\
 Let's start with this classic:
 
@@ -26,7 +28,6 @@ When we want to translate an Entity Relationship Diagram (ERD) into a Relation M
 
 Let's put this in practice:
 \vskip 20pt
-f
 \begin{minipage}{0.45\textwidth}
 	PERSONS
 	\begin{table}[H]
@@ -56,7 +57,7 @@ Now it's time to draw the relation table:
 	\texttt{HAS(\underline{CF, Targa}, Date)}
 \end{minipage}
 \vskip 20pt
-Well, that's clear. Now it's time to mix up things a little bit.
+Well, that's clear. Now it's time to mix things up a little bit.
 What if a car can't be owned by different people? (see \ref{diagram1_01})
 \begin{figure}[H]
 	\centering
@@ -74,7 +75,7 @@ And what if we want the car to have also at least one owner? (see \ref{diagram1_
 	\caption{A car now can have at most one owner}
 	\label{diagram1_02}
 \end{figure}
-Now that a car must be owned by one (and only one) person it has no more sense to keep HAS table and CARS table divided: the smartest solution is to delete HAS table and introduce in CARS table two columns, one for Date and one for CF, which will be a FK. Last but not least the CF field must be mapped as \emph{not-null}.
+Now that a car must be owned by one (and only one) person it makes sense no more to keep HAS table and CARS table divided: the smartest solution is to delete HAS table and introduce in CARS table two columns, one for Date and one for CF, which will be a FK. Last but not least the CF field must be mapped as \emph{not-null}.
 That's the representation in RM:
 \vskip 20pt
 \begin{minipage}{.8\textwidth}
@@ -176,7 +177,66 @@ There are three ways to translate ER inheritance into RM:
 	Thinking in a querying way that's the best approach, for every research in the database you have to navigate only trough a table.
 \end{enumerate}
 
-\chapter{Translating RM into ER}
+\section{Reverse engineering: from RM to ER}
+Sometimes you may want to be able to translate an RM back to its ER model, so here we provide some examples and basic rules in order to get through it.
+
+For instance, let's consider the following statements:\\\\
+\texttt{A(\underline{x},y)}\\
+\texttt{B(\underline{u}, \underline{v})}\\
+\tab[.2cm] \texttt{v FOREIGN KEY to A}\\
+\tab[.2cm] \texttt{u FOREIGN KEY to C}\\
+\texttt{C(\underline{m}, n)}
+\vskip 5pt
+B has two foreign keys, one points to A and the other one points to C, so B is a relationship between A and C.
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_00.png}
+	\caption{}
+	\label{diagram3_00}
+\end{figure}
+\vskip 5pt
+But now we change it up just a little, and we want something like this:\\\\
+\texttt{A(\underline{x},y)}\\
+\texttt{B(\underline{u}, v)}\\
+\tab[.2cm] \texttt{v FOREIGN KEY to A}\\
+\tab[.2cm] \texttt{u FOREIGN KEY to C}\\
+\texttt{C(\underline{m}, n)}
+\vskip 5pt
+It looks similar, but it's not the same: \texttt{v} is not a key for \texttt{B} anymore, so we can have multiple \texttt{v}s for just one \texttt{u}, so the relationship from \texttt{C} to \texttt{A} becomes a "many-one" relationship.
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_01.png}
+	\caption{}
+	\label{diagram3_01}
+\end{figure}
+\vskip 5pt
+Here it is another example:\\\\
+\texttt{C(\underline{m}, n, v)}\\
+\tab[.2cm] \texttt{m FOREIGN KEY to A}\\
+\texttt{A(\underline{x},y)}\\
+\vskip 5pt
+This is a IS-A and C is child to A, because the foreign key \texttt{m} is also the only key in the table.
+
+\section{Weak Entities and summing it up}
+Now let's take a quick look at the translation of Weak Entities, i.e. entities that exist only if another one does.
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram4_00.png}
+	\caption{E-mail cannot exist if domain doesn't}
+	\label{diagram4_00}
+\end{figure}
+\vskip 5pt
+The translation is simple: Domains is a straight entity, so we list all its attributes and underline the key, and then we do the same for E-mails, and its composite key is going to be its key (address) plus the key of its straight entity (name), which is also a Foreign Key.\\\\
+\texttt{DOMAINS(\underline{name})}\\
+\texttt{EMAILS(\underline{address}, date, \underline{name})}\\
+\tab[.2cm] \texttt{name FOREIGN KEY to DOMAINS}
+\vskip 5pt
+
+Now let's point out three basic rule if you are into troubles with reverse engineering and you want to have it done quickly:
+\paragraph{Rule \#1} If the Foreign Key is not an attribute, what we have is a \emph{relationship};
+\paragraph{Rule \#2} if the Foreign Key is an attribute and it is the only key for that table, what we have is an IS-A;
+\paragraph{Rule \#3} if the Foreign Key is an attribute but it is NOT the only key for that table, what we have is a Weak Entity relationship.
+
+
+
+
 
 
 \end{document}
