@@ -1,0 +1,24 @@
+\documentclass[varwidth=6in]{standalone}
+
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+
+\setlength\lightrulewidth{0.1pt}
+\providecommand\lightrule{%
+	\arrayrulecolor{black!30}%
+	\midrule[\lightrulewidth]%
+	\arrayrulecolor{black}}
+
+% arara: pdflatex
+% arara: latexmk: { clean: partial }
+\begin{document}
+\begin{tabularx}{\textwidth}{ >{\hsize=.20\hsize}X >{\hsize=.25\hsize}X >{\hsize=.10\hsize}X }
+	\toprule
+		CF & \underline{Targa} & Date\\
+	\midrule
+		1 & xy & 2002\\\lightrule
+		5 & uv & 2004\\
+	\bottomrule
+\end{tabularx}
+\end{document}
