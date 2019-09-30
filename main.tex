@@ -17,12 +17,12 @@
 \begin{document}
 
 \title{ER-RM translation with examples}
-\subtitle{Taken form prof. Yannis Velegrakis lessons}
+\subtitle{Taken form prof. Yannis Velegrakis classes}
 \author{Conti Samuele \and Daniotti Filippo}
 \maketitle
 
 \chapter{Translating ER into RM}
-The best way to learn this mechanism is to poceed by examples.\\
+The best way to learn this mechanism is to proceed by examples.\\
 Let's start with this classic:
 
 \begin{figure}[H]
@@ -33,8 +33,8 @@ Let's start with this classic:
 \end{figure}
 
 When we want to translate an Entity Relationship Diagram (ERD) into a Relation Model (RM) we have to follow certain rules, let's check them out.
-\paragraph*{Rule \#1} Every entity is a table and its attributes are the table's columns.
-\paragraph*{Rule \#2} Each relation is a table and its attributes are part of the table's columns; also the keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The FKs must be the table Key.\\
+\paragraph*{Rule \#1} Every entity is a table and its attributes are the columns of the table.
+\paragraph*{Rule \#2} Each relationship is a table and its attributes are part of the columns of the table; also the Keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The Key of the table must be composed by the FKs.\\
 
 Let's put this in practice:
 \vskip 20pt
@@ -75,9 +75,9 @@ What if a car can't be owned by different people? (see \ref{diagram1_01})
 	\caption{A car now can have at most one owner}
 	\label{diagram1_01}
 \end{figure}
-We must use only the Targa as key in HAS relation. This leads us to the first exception of Rule \#2	:
+We must use only the Targa as Key in the HAS relation. This leads us to the first exception of Rule \#2	:
 
-Each many to one relationship become a relation as in Rule \#2 but the key is \emph{only} the key of the Many part.
+Each many to one relationship become a relation as in Rule \#2 but the Key is \emph{only} the Key of the "many" part.
 
 Let's see this rule applied:
 \vskip 20pt
@@ -98,11 +98,11 @@ And what if we want the car to have also at least one owner? (see \ref{diagram1_
 	\caption{A car now can have at most one owner}
 	\label{diagram1_02}
 \end{figure}
-Now that a car must be owned by one (and only one) person it makes sense no more to keep HAS table and CARS table divided, this leads us to the second exception to Rule\#2:
+Now that a car must be owned by one (and only one) person it makes no sense to keep separately the HAS table and the CARS table, this leads us to the second exception to Rule\#2:
 
-Each many to one and total partecipation relationship does not become a relation by itself, but its attributes and the keys of the "one" entity are added in the attributes of the "many" entity. The keys of the one entity has to be Foreign Key for sure and has to be requested to be \emph{not-null}.
+Each many to one and total partecipation relationship does not become a relation by itself, but its attributes and the Keys of the "one" entity are added in the attributes of the "many" entity. The Key of the "one" entity must be marked as Foreign Key and has to be requested to be not null.
 
-Therefore in our case the solution is to delete HAS table and introduce in CARS table two columns, one for Date and one for CF, which will be a FK and will be marked as not null.
+Therefore in our case the solution is to delete the HAS table and add two columns to the CARS table, one for Date and one for CF, which will be a FK and will be requested to be not null.
 That's the representation in RM:
 \vskip 20pt
 \begin{minipage}{.8\textwidth}
@@ -116,10 +116,10 @@ That's the representation in RM:
 \end{minipage}
 \vskip 20pt
 
-Going back to diagram \ref{diagram1_00}, what if I want to keep in memory all the times somenoe rent the same car?
-Now I cannot do that because, being the Key, Targa cannot apear twice in the table.
+Going back to diagram \ref{diagram1_00}, what if we want to keep in memory all the times someone rent the same car?
+Now we cannot do that because, being the Key, Targa cannot apear twice in the table.
 The solution here is to use also Date as a Key.
-But that's not fasiable because, as we stated in Rule \#2, only Keys of the entities are used as Key in the relation Table, and Date is not an entity; hence we have to redesign our diagram as this:
+But that's not feasible because, as we stated in Rule \#2, only Keys of the entities are used as Key in the relation table, and Date is not an entity; hence we have to redesign our diagram as this:
 \begin{figure}[H]
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_03.png}
 	\caption{Now Date is an entity}
@@ -127,7 +127,7 @@ But that's not fasiable because, as we stated in Rule \#2, only Keys of the enti
 \end{figure}
 \vskip 20pt
 
-Now we want that every Rent must have an Insurance, so we have to create a new entity called Insurance and link it to the Rent relation as this:
+Now we decide that every rent must have an Insurance, so we have to create a new entity called Insurance and link it to the RENT relation as this:
 \begin{figure}[H]
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_04.png}
 	\caption{We added Insurance as an entity}
@@ -139,28 +139,28 @@ Now we want that every Rent must have an Insurance, so we have to create a new e
 \end{figure}
 \vskip 20pt
 
-And now we decide that the Insurance is no more necessary for a Rent, how do we set it as a field hat can be null?
-We have to link it to Rent with a relation.
-But we can't link two relations toghether: we must aggregate Persons, Rent and Car so that we can treat this set as an entity and then we can link to the aggregated entity the Insurance with another relation (see \ref{diagram1_05}).
+And now we decide that the Insurance is necessary no more for a rent, how do we set it as a field that can be null?
+We have to link it to RENT with a relation.
+But we can't link two relations toghether: we must aggregate PERSONS, RENT and CARS so that we can treat this set as an entity and then we can link to the aggregated entity the Insurance with another relationship (see \ref{diagram1_05}).
 \begin{figure}[H]
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_05.png}
 	\caption{We added Insurance as an entity}
 	\label{diagram1_05}
 \end{figure}
-In this case what's going to be the key of Rent?
+In this case what's going to be the Key of RENT?
 \vskip 10pt
 \texttt{RENT(\underline{Owner, Car}, date)}\\
 	\tab[.8cm] \texttt{Owner FK to PERSONS}\\
 	\tab[.8cm] \texttt{Car FK to CARS}
 \vskip 10pt
-And which should be the Key of has?
-Keeping in mind Rule \#2 we deduct that the keys of a relation must be the keys of the entities involved, marked as Foreign Key, therefore:
+And which should be the Key of HAS?
+Keeping in mind Rule \#2 we deduced that the Keys of a relation must be the Keys of the entities involved, marked as Foreign Key, therefore:
 \vskip 10pt
 \texttt{HAS(\underline{Owner, Car, Name})}\\
 	\tab[.8cm] \texttt{(Owner, Car) FK to RENT}\\
 	\tab[.8cm] \texttt{Name FK to INSURANCE}
 \vskip 10pt
-And now the last question for this example: what's the difference between \ref{diagram1_04} and \ref{diagram1_06}?
+And now the last question about this example: what's the difference between \ref{diagram1_04} and \ref{diagram1_06}?
 \begin{figure}[H]
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_06.png}
 	\caption{Note the particular form of the diagram}
@@ -168,12 +168,13 @@ And now the last question for this example: what's the difference between \ref{d
 \end{figure}
 The difference is:
 \begin{itemize}
-	\item In \ref{diagram1_04} you \emph{must} use Name as Key in RENT table, because Insurance is an entity involved in Rent relation (Rule \#2); therefore a person can rent the same car multiple times given that he uses a different insurance.\\
-	\item In \ref{diagram1_06} you don't have to use Name as Key in RENT table, therefore it is not possible for a person to rent the same car with two different insurances (even if the insurance changes the key remains the same).
+	\item In \ref{diagram1_04} you \emph{must} use Name as Key in the RENT table, because Insurance is an entity involved in RENT relation (Rule \#2); therefore a person can rent the same car multiple times given that he or she uses a different insurance.\\
+	\item In \ref{diagram1_06} you don't have to use Name as Key in the RENT table, therefore it is not possible for a person to rent the same car with two different insurances (even if the insurance changes the Key remains the same).
 \end{itemize}
+\newpage
 
 \section{Let's talk about inheritance}
-It's time to see a little bit of inheritance, as before we're starting with an example:
+Now it's time to see a little bit of inheritance, as before we're starting with an example:
 \begin{figure}[H]
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram2_00.png}
 	\caption{An example of inheritance}
@@ -181,32 +182,32 @@ It's time to see a little bit of inheritance, as before we're starting with an e
 \end{figure}
 There are three ways to translate ER inheritance into RM:
 \begin{enumerate}
-	\item The first approach is to have a different table for every entity, the tables of the children-entities will contain also the attributes inherited by the parent-entity.
+	\item The first approach is to have a different table for every entity, the tables of the children entities will contain also the attributes inherited by the parent entity.
 	\vskip 5pt
 	\texttt{FILMS(\underline{Title}, Duration)}\\
 	\texttt{CARTOONS(\underline{Title}, Duration, Voice)   Title FK to FILMS}\\
 	\texttt{MURDER(\underline{Title}, Duration, Weapon)   Title FK to FILMS}
 	\vskip 5pt
-	The bad aspect of this approach is that we store the different entity-types in different palces, for instance Shrek is stored into CARTOONS table, therefore if we want to query the database by title and ask for Shrek we have to navigate trough all the three tables. Also if we want to query on how many films the database contains we will have to shearch in all the three tables.
-	\item The second approach is to have a different table for every entity, but the tables of the children-entities contain only their specific attributes and the Key attribute of the parent-entity, which will be also the child-entity's Key (and Foreign Key).
+	The bad aspect of this technique is that we store the different entity-types in different places, for instance Shrek is stored into CARTOONS table, therefore if we want to query the database by title and ask for Shrek we have to navigate through all the tables. Also if we want to query how many films the database contains we will have to search in all the tables.
+	\item The second approach is to have a different table for every entity, but the tables of the children entities contain only their specific attributes and the Key attribute of the parent entity, which will be also the child entity's Key (and Foreign Key).
 	\vskip 5pt
 	\texttt{FILMS(\underline{Title}, Duration)}\\
 	\texttt{CARTOONS(\underline{Title}, Voice)   Title FK to FILMS}\\
 	\texttt{MURDER(\underline{Title}, Weapon)   Title FK to FILMS}
 	\vskip 5pt
-	This approach is better because all the entities are stored in the FILMS table and therefore if we're querying, for instance, title or duration, we have to look only in the FILMS table. The films that are cartoons, like Shrek are going to be registered also in the CARTOONS table, and there we will find their voice attribute.
-	The side effect of this approach is that when we query by, let's say, duration and voice we have to look into two different tables at the same time, and that's actually more complex than we need.
-	\item The third approach is to store all the films in the same table with all the attributes of the parent-entity and the children-entities, these will be filled with a \emph{null} value if the film stored won't be a cartoon or a murder.
+	This strategy is better because all the entities are stored in the FILMS table and therefore if we're querying, for instance, title or duration, we have to look only into the FILMS table. The films that are cartoons, like Shrek are going to be registered also in the CARTOONS table, and there we will find their voice attribute.
+	The side effect of this approach is that when we query,,let's say, duration and voice we have to look into two different tables at the same time, and that's actually more complicated than we need.
+	\item The third approach is to store all the films in the same table with all the attributes of the parent entity and the children entities, these will be filled with a \emph{null} value if the film stored isn't a cartoon or a murder.
 	\vskip 5pt
 	\texttt{FILMS(\underline{Title}, Duration, Voice, Weapon)}\\
 	\tab[.4cm] \texttt{Duration is not-null}\\
 	\tab[.4cm] \texttt{Voice and Weapon can be null}
 	\vskip 5pt
-	Thinking in a querying way that's the best approach, for every research in the database you have to navigate only trough a table. Anyway in the real life, where problems are way much complex than our examples, this approach can become tricky too.
+	Thinking in a querying way that's the best approach, for every research in the database you have to navigate only through a table. Anyway in the real life, where problems are way much complex than our examples, this technique can become tricky too.
 \end{enumerate}
 
 \chapter{Reverse engineering: from RM to ER}
-Sometimes you may want to translate an RM back to its ER model, so here we provide some examples and basic rules in order to get through it.
+Sometimes you may want to translate an RM back to its ER model, so here we provide some examples and basic rules in order to get away with it.
 
 For instance, let's consider the following statements:\\\\
 \texttt{A(\underline{x},y)}\\
@@ -229,7 +230,7 @@ But now we change it up just a little, and we want something like this:\\\\
 \tab[.4cm] \texttt{u Foreign Key to C}\\
 \texttt{C(\underline{m}, n)}
 \vskip 5pt
-It looks similar, but it's not the same: \texttt{v} is not a key for \texttt{B} anymore, so we can have multiple \texttt{v}s for just one \texttt{u}, so the relationship from \texttt{C} to \texttt{A} becomes a "many-one" relationship.
+It looks similar, but it's not the same: \texttt{v} is not a Key for \texttt{B} anymore, so we can have multiple \texttt{v}s for just one \texttt{u}, so the relationship from \texttt{C} to \texttt{A} becomes a many to one relationship.
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_01.png}
 	\caption{}
@@ -241,26 +242,26 @@ Here it is another example:\\\\
 \tab[.4cm] \texttt{m Foreign Key to A}\\
 \texttt{A(\underline{x},y)}\\
 \vskip 5pt
-This is a IS-A and C is child to A, because the Foreign Key \texttt{m} is also the only key of C.
+This is a IS-A and C is child to A, because the Foreign Key \texttt{m} is also the only Key of C.
 
 \section{Weak Entities and summing it up}
-Now let's take a quick look at the translation of Weak Entities, i.e. entities that exist only if another one does.
+Now let's take a quick look at the translation of Weak Entities, i.e. entities that cannot exist on their own.\\
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram4_00.png}
 	\caption{E-mail cannot exist if domain doesn't}
 	\label{diagram4_00}
 \end{figure}
 \vskip 5pt
-The translation is simple: Domains is a straight entity, so we list all its attributes and underline the key, and then we do the same for E-mails, and its composite key is going to be its key (address) plus the key of its straight entity (Name, in this case), which is also a Foreign Key.\\\\
+The translation is simple: Domains is a straight entity, so we list all its attributes and underline the Key, and then we do the same for E-mails, and its Composite Key is going to be its Key (address) plus the Key of its straight entity (Name, in this case), which is also a Foreign Key.\\\\
 \texttt{DOMAINS(\underline{name})}\\
 \texttt{EMAILS(\underline{address}, date, \underline{name})}\\
 \tab[.4cm] \texttt{name Foreign Key to DOMAINS}
 \vskip 5pt
 
 Now let's point out three basic rules if you are into troubles with reverse engineering and you want to have it done quickly:
-\paragraph{Rule \#1} If the Foreign Key is not an attribute, what we have is a \emph{relationship};
-\paragraph{Rule \#2} if the Foreign Key is an attribute and it is the only key for that table, what we have is an IS-A;
-\paragraph{Rule \#3} if the Foreign Key is an attribute but it is NOT the whole key for that table, what we have is a Weak Entity relationship.
+\paragraph{Rule \#1} If the Foreign Key is not a part of the Key, what we have is a \emph{relationship};
+\paragraph{Rule \#2} If the Foreign Key is the only Key for that table, what we have is an IS-A;
+\paragraph{Rule \#3} If the Foreign Key is a part of thr Key but it is NOT the whole Key for that table, what we have is a Weak Entity relationship.
 
 
 
