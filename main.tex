@@ -32,7 +32,7 @@ Let's start with this classic:
 	\label{diagram1_00}
 \end{figure}
 
-When we want to translate an Entity Relationship Diagram (ERD) into a Relation Model (RM) we have to follow certain rules, let's check them out.
+When we want to translate an Entity Relationship Diagram (ERD) into a Relational Model (RM) we have to follow certain rules, let's check them out.
 \paragraph*{Rule \#1} Every entity is a table and its attributes are the columns of the table.
 \paragraph*{Rule \#2} Each relationship is a table and its attributes are part of the columns of the table; also the Keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The Key of the table must be composed by the FKs.\\
 
@@ -75,7 +75,7 @@ What if a car can't be owned by different people? (see \ref{diagram1_01})
 	\caption{A car now can have at most one owner}
 	\label{diagram1_01}
 \end{figure}
-We must use only the Targa as Key in the HAS relation. This leads us to the first exception of Rule \#2	:
+We must use only the Targa as Key in the HAS relation. This leads us to the first exception to Rule \#2	:
 
 Each many to one relationship become a relation as in Rule \#2 but the Key is \emph{only} the Key of the "many" part.
 
@@ -100,7 +100,7 @@ And what if we want the car to have also at least one owner? (see \ref{diagram1_
 \end{figure}
 This way a car must be owned by one (and only one) person, so it makes no sense to keep separately the HAS table and the CARS table, and this leads us to the second exception to Rule \#2:
 
-Each "many to one" and total partecipation relationship does not become a relation by itself, but its attributes and the Keys of the "one" entity are added in the attributes of the "many" entity. The Key of the "one" entity must be marked as Foreign Key and has to be requested to be \texttt{not null}.
+Each many to one and total partecipation relationship does not become a relation by itself, but its attributes and the Keys of the "one" entity are added in the attributes of the "many" entity. The Key of the "one" entity must be marked as Foreign Key and has to be requested to be \texttt{not null}.
 
 Therefore in our case the solution is to delete the HAS table and add two columns to the CARS table, one for Date and one for CF, which will be a FK and will be requested to be \texttt{not null}.
 That's the representation in RM:
@@ -153,7 +153,7 @@ In this case what's going to be the Key of RENT?
 	\tab[.8cm] \texttt{Owner FK to PERSONS}\\
 	\tab[.8cm] \texttt{Car FK to CARS}
 \vskip 10pt
-And which should be the Key of HAS?
+\noindent And which should be the Key of HAS?\\
 Keeping in mind Rule \#2 we have that the Keys of a relationship must be the Keys of the entities involved, marked as Foreign Key, therefore:
 \vskip 10pt
 \texttt{HAS(\underline{Owner, Car, Name})}\\
@@ -190,7 +190,7 @@ There are three ways to translate ER inheritance into RM:
 	\texttt{MURDER(\underline{Title}, Duration, Weapon)}\\
 		\tab[.8cm] \texttt{Title FK to FILMS}
 	\vskip 5pt
-	The bad aspect of this technique is that we store the different entity-types in different places, for instance Shrek is stored into CARTOONS table, therefore if we want to query the database by Title and ask for Shrek we have to navigate through all the tables. Also if we want to query how many films the database contains we will have to search in all the tables.
+	The bad aspect of this technique is that we store the different entity-types in different places, for instance Shrek is stored into CARTOONS tab	le, therefore if we want to query the database by Title and ask for Shrek we have to navigate through all the tables. Also if we want to query how many films the database contains we will have to search in all the tables.
 	\item The second approach is to have a different table for every entity, but the tables of the children entities contain only their specific attributes and the Key attribute of the parent entity, which will be also the child entity's Key (and Foreign Key).
 	\vskip 5pt
 	\texttt{FILMS(\underline{Title}, Duration)}\\
@@ -201,7 +201,7 @@ There are three ways to translate ER inheritance into RM:
 	\vskip 5pt
 	This strategy is better because all the entities are stored in the FILMS table and therefore if we're querying, for instance, Title or Duration, we have to look only into the FILMS table. The films that are cartoons - like Shrek - 	are going to be registered also in the CARTOONS table, and there we will find their Voice attribute.
 	The side effect of this approach is that when we query, let's say, Duration and Voice we have to look into two different tables at the same time, and that's actually more complicated than we need.
-	\item The third approach is to store all the films in the same table with all the attributes of the parent entity and the children entities, these will be filled with a \texttt{null} value if the film stored isn't a cartoon or a murder.
+	\item The third approach is to store all the films in the same table with all the possible attributes of the parent entity and the children entities, which will be filled with a \texttt{null} value if the film stored isn't a cartoon or a murder.
 	\vskip 5pt
 	\texttt{FILMS(\underline{Title}, Duration, Voice, Weapon)}\\
 	\tab[.4cm] \texttt{Duration is not-null}\\
@@ -209,6 +209,20 @@ There are three ways to translate ER inheritance into RM:
 	\vskip 5pt
 	Thinking in a querying way that's the best approach, for every research in the database you have to navigate only through a table. Anyway in the real life, where problems are way much complex than our examples, this technique can become tricky too.
 \end{enumerate}
+
+\section{Weak Entities}
+Now let's take a quick look at the translation of Weak Entities, i.e. entities that cannot exist on their own.\\
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram4_00.png}
+	\caption{E-mail cannot exist if domain doesn't}
+	\label{diagram4_00}
+\end{figure}
+\vskip 5pt
+The translation is simple: DOMAINS is a straight entity, so we list all its attributes and underline the Key, and then we do the same for E-mails, and its Composite Key is going to be its Key (Address) plus the Key of its straight entity (Name, in this case), which is also a Foreign Key.\\\\
+\texttt{DOMAINS(\underline{name})}\\
+\texttt{EMAILS(\underline{address}, date, \underline{name})}\\
+\tab[.4cm] \texttt{name Foreign Key to DOMAINS}
+\vskip 5pt
 
 \chapter{Reverse engineering: from RM to ER}
 Sometimes you may want to translate an RM back to its ER model, so here we provide some examples and basic rules in order to get it done.
@@ -220,7 +234,7 @@ For instance, let's consider the following statements:\\\\
 \tab[.4cm] \texttt{u Foreign Key to C}\\
 \texttt{C(\underline{m}, n)}
 \vskip 5pt
-B has two Foreign Keys, one points to A and the other one points to C, so B is a relationship between A and C.
+\texttt{B} has two Foreign Keys, one points to \texttt{A} and the other one points to \texttt{C}, so \texttt{B} is a relationship between \texttt{A} and \texttt{C}.
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_00.png}
 	\caption{}
@@ -248,20 +262,7 @@ Here it is another example:\\\\
 \vskip 5pt
 This is a IS-A and C is child to A, because the Foreign Key \texttt{m} is also the only Key of C.
 
-\section{Weak Entities and summing it up}
-Now let's take a quick look at the translation of Weak Entities, i.e. entities that cannot exist on their own.\\
-\begin{figure}[H]
-	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram4_00.png}
-	\caption{E-mail cannot exist if domain doesn't}
-	\label{diagram4_00}
-\end{figure}
-\vskip 5pt
-The translation is simple: DOMAINS is a straight entity, so we list all its attributes and underline the Key, and then we do the same for E-mails, and its Composite Key is going to be its Key (Address) plus the Key of its straight entity (Name, in this case), which is also a Foreign Key.\\\\
-\texttt{DOMAINS(\underline{name})}\\
-\texttt{EMAILS(\underline{address}, date, \underline{name})}\\
-\tab[.4cm] \texttt{name Foreign Key to DOMAINS}
-\vskip 5pt
-
+\section{Summing it up}
 Now let's point out three basic rules if you are into troubles with reverse engineering and you want to have it done quickly:
 \paragraph{Rule \#1} If the Foreign Key is not a part of the Key, what we have is a \emph{relationship};
 \paragraph{Rule \#2} If the Foreign Key is the only Key of that table, what we have is an IS-A;
