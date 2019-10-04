@@ -263,7 +263,7 @@ Here it is another example:\\\\
 This is a IS-A and C is child to A, because the Foreign Key \texttt{m} is also the only Key of C.
 
 \section{Advanced examples}
-Let's take a look at a few advanced examples:\\
+Let's take a look at a few advanced examples:
 \subsection*{Esempio A}
 \texttt{Person(\underline{cf}, pname, paddress)}\\
 \texttt{Car(\underline{cid}, targa)}\\
@@ -274,7 +274,10 @@ Let's take a look at a few advanced examples:\\
 \texttt{Has2(\underline{cf, cif, iid})}\\
 \tab[.4cm] \texttt{(cf, cif) FK to Has}\\
 \tab[.4cm] \texttt{iid FK to Insurance}
-
+\vskip 8pt
+As for the previous examples in this RM are present two relations, which are HAS and HAS2, we can say that these are relations because they have two Foreign Keys to other elements; the elements without FKs must be entities, so we have PERSONS, CARS and INSURANCES as entities.
+The intresting detail in this case is that HAS2 has this FK "\texttt{(cf, cif) FK to Has}", we know that it's impossible to have one relation linked to one other, therefore it's impossible to have a link between HAS and HAS2, this implies that there is an aggregation between PERSONS, CARS and HAS.\\
+Let's see what I'm babbling about:
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_00.png}
 	\caption{}
@@ -285,6 +288,8 @@ Let's take a look at a few advanced examples:\\
 \texttt{Person(\underline{cf}, pname, paddress)}\\
 \texttt{Student(\underline{mat}, corso)}\\
 \tab[.4cm] \texttt{mat FK to Person}
+\vskip 8pt
+In this case the peculiarity is that the element STUDENT has \texttt{mat} as only Key, and it's also a FK to PERSON, this means that there must be an IS-A between the two entities, let's check the ERD:
 
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_01.png}
@@ -296,6 +301,9 @@ Let's take a look at a few advanced examples:\\
 \texttt{Person(\underline{cf}, pname, paddress)}\\
 \texttt{Student(\underline{mat}, pers, corso)}\\
 \tab[.4cm] \texttt{pers FK to Person}
+\vskip 8pt
+This example is slightly different from the previous one, but it's significance is way different. We see that in this case STUNDENT has \texttt{mat} as Key but it's no more an FK to PERSON, nontheless there's a new attribute in SRUDENT which is an FK to PERSON, that's \texttt{pers}.\\
+This means that a relation is involved, and this relation has a precise form: it is a many to one, in fact a STUDENT can be linked only to one (maximum one) PERSON, meanwhile we know no restriction for the PERSON side.
 
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_02.png}
@@ -307,6 +315,7 @@ Let's take a look at a few advanced examples:\\
 \texttt{Person(\underline{cf}, pname, paddress)}\\
 \texttt{Student(\underline{mat, pers}, corso)}\\
 \tab[.4cm] \texttt{pers FK to Person}
+\vskip 8pt
 
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_03.png}
