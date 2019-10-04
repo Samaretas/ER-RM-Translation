@@ -17,7 +17,7 @@
 \begin{document}
 
 \title{ER-RM translation with examples}
-\subtitle{Taken form prof. Yannis Velegrakis classes}
+\subtitle{Taken form prof. Yannis Velegrakis lectures}
 \author{Conti Samuele \and Daniotti Filippo}
 \maketitle
 
@@ -262,15 +262,62 @@ Here it is another example:\\\\
 \vskip 5pt
 This is a IS-A and C is child to A, because the Foreign Key \texttt{m} is also the only Key of C.
 
+\section{Advanced examples}
+Let's take a look at a few advanced examples:\\
+\subsection*{Esempio A}
+\texttt{Person(\underline{cf}, pname, paddress)}\\
+\texttt{Car(\underline{cid}, targa)}\\
+\texttt{Insurance(\underline{iid}, iname)}\\
+\texttt{Has(\underline{cf, cif})}\\
+\tab[.4cm] \texttt{cf FK to Person}\\
+\tab[.4cm] \texttt{cif FK to Car}\\
+\texttt{Has2(\underline{cf, cif, iid})}\\
+\tab[.4cm] \texttt{(cf, cif) FK to Has}\\
+\tab[.4cm] \texttt{iid FK to Insurance}
+
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_00.png}
+	\caption{}
+	\label{diagram6_00}
+\end{figure}
+
+\subsection*{Esempio B}
+\texttt{Person(\underline{cf}, pname, paddress)}\\
+\texttt{Student(\underline{mat}, corso)}\\
+\tab[.4cm] \texttt{mat FK to Person}
+
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_01.png}
+	\caption{}
+	\label{diagram6_01}
+\end{figure}
+
+\subsection*{Esempio C}
+\texttt{Person(\underline{cf}, pname, paddress)}\\
+\texttt{Student(\underline{mat}, pers, corso)}\\
+\tab[.4cm] \texttt{pers FK to Person}
+
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_02.png}
+	\caption{}
+	\label{diagram6_02}
+\end{figure}
+
+\subsection*{Esempio D}
+\texttt{Person(\underline{cf}, pname, paddress)}\\
+\texttt{Student(\underline{mat, pers}, corso)}\\
+\tab[.4cm] \texttt{pers FK to Person}
+
+\begin{figure}[H]
+	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_03.png}
+	\caption{}
+	\label{diagram6_03}
+\end{figure}
+
 \section{Summing it up}
 Now let's point out three basic rules if you are into troubles with reverse engineering and you want to have it done quickly:
 \paragraph{Rule \#1} If the Foreign Key is not a part of the Key, what we have is a \emph{relationship};
 \paragraph{Rule \#2} If the Foreign Key is the only Key of that table, what we have is an IS-A;
 \paragraph{Rule \#3} If the Foreign Key is a part of the Key but it is NOT the whole Key of that table, what we have is a Weak Entity relationship.
-
-
-
-
-
 
 \end{document}
