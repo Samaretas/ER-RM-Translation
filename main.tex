@@ -34,7 +34,7 @@ Let's start with this classic:
 	\label{diagram1_00}
 \end{figure}
 
-When we want to translate an Entity Relationship Diagram (ERD) into a Relational Model (RM) we have to follow certain rules, let's check them out.
+When we want to translate an Entity Relationship Diagram (ER) into a Relational Model (RM) we have to follow certain rules, let's check them out.
 \paragraph*{Rule \#1} Every entity is a table and its attributes are the columns of the table.
 \paragraph*{Rule \#2} Each relationship is a table and its attributes are part of the columns of the table; also the Keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The Key of the table must be composed by the FKs.\\
 
@@ -239,7 +239,7 @@ For instance, let's consider the following statements:\\\\
 B has two Foreign Keys, one points to A and the other one points to C, so B is a relationship between A and C.
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_00.png}
-	\caption{}
+	\caption{Justa figure}
 	\label{diagram3_00}
 \end{figure}
 \vskip 5pt
@@ -253,7 +253,7 @@ But now we change it up just a little, and we want something like this:\\\\
 It looks similar, but it's not the same: \texttt{v} is not a Key of B anymore, so we can have multiple \texttt{v}s for just one \texttt{u}, so the relationship from C to A has become a many to one relationship.
 \begin{figure}[H]
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_01.png}
-	\caption{}
+	\caption{Justa nother figure}
 	\label{diagram3_01}
 \end{figure}
 \vskip 5pt
