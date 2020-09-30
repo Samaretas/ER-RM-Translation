@@ -165,13 +165,10 @@ Now we want every rent to have an insurance, so we have to create a new entity c
 	\caption{We added INSURANCES as an entity}
 	\label{diagram1_04}
 \end{figure}
-\hspace{0.25\textwidth}
-\begin{minipage}{0.5\textwidth}
-	\texttt{RENT(\underline{Owner, Car, Name}, date)}\\
-		\tab[.8cm] \texttt{Owner FK to PERSONS}\\
-		\tab[.8cm] \texttt{Car FK to CARS}\\
-		\tab[.8cm] \texttt{Name FK to INSURANCES}
-\end{minipage}
+\texttt{RENT(\underline{Owner, Car, Name}, date)}\\
+	\tab[.8cm] \texttt{Owner FK to PERSONS}\\
+	\tab[.8cm] \texttt{Car FK to CARS}\\
+	\tab[.8cm] \texttt{Name FK to INSURANCES}
 \vskip 20pt
 
 And now we decide that the insurance is no more necessary for a rent, how do we set it as a field that can be \emph{null}?
@@ -205,7 +202,7 @@ And now the last question about this example: what's the difference between \ref
 \end{figure}
 The difference is:
 \begin{itemize}
-	\item In \ref{diagram1_04} you \emph{must} use \texttt{Name} as Key in the RENT table, because INSURANCES is an entity involved in RENT relation (Rule \#2); therefore a person can rent the same car multiple times given that he or she uses a different insurance.\\
+	\item In \ref{diagram1_04} you \emph{must} use \texttt{Name} as Key in the RENT table, because INSURANCES is an entity involved in RENT relation (Rule \#2); therefore a person can rent the same car multiple times given that he or she uses a different insurance.
 	\item In \ref{diagram1_06} you don't have to use \texttt{Name} as Key in the RENT table, therefore it is not possible for a person to rent the same car with two different insurances (even if the insurance changes the Key remains the same).
 \end{itemize}
 
@@ -303,7 +300,8 @@ Here it is another example:\\\\
 This is a IS-A and C is child to A, because the Foreign Key \texttt{m} is also the only Key of C.
 
 \section{Advanced examples}
-Let's take a look at a few more examples:
+Let's take a look at a few more examples.
+
 \subsection*{Esempio A}
 \texttt{Person(\underline{cf}, pname, paddress)}\\
 \texttt{Car(\underline{cid}, targa)}\\
