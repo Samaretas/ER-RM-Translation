@@ -1,10 +1,16 @@
-\documentclass[class=book, crop=false, oneside]{standalone}
-\usepackage[subpreambles=true]{standalone}
+\documentclass[12pt, oneside]{report}
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian, english]{babel}
+
+\usepackage{microtype}
+\usepackage{newpxtext}
+
+\usepackage[subpreambles=true]{standalone}
 \usepackage{import}
+\usepackage{float}
 \usepackage{titling}
-\usepackage[autostyle]{csquotes}
-   \MakeAutoQuote{‘}{’}
 
 \newcommand{\subtitle}[1]{%
   \posttitle{%
@@ -12,16 +18,18 @@
     \begin{center}\large#1\end{center}
     \vskip0.5em}%
 }
+
 \newcommand\tab[1][1cm]{\hspace*{#1}}
 
 \graphicspath{{./assets/diagrams/}}
 
 \begin{document}
 
-\title{ER-RM translation with examples}
-\subtitle{Taken form prof. Yannis Velegrakis lectures}
-\author{Conti Samuele \and Daniotti Filippo}
-\maketitle
+	\title{ER-RM translation with examples}
+	\subtitle{Taken form prof. Yannis Velegrakis lectures}
+	\author{Conti Samuele \and Daniotti Filippo}
+	\date{\today}
+	\maketitle
 
 \chapter{Translating ER into RM}
 The best way to learn this mechanism is to proceed by examples.\\
@@ -35,12 +43,15 @@ Let's start with this classic:
 \end{figure}
 
 When we want to translate an Entity Relationship Diagram (ER) into a Relational Model (RM) we have to follow certain rules, let's check them out.
+
 \paragraph*{Rule \#1} Every entity is a table and its attributes are the columns of the table.
+
 \paragraph*{Rule \#2} Each relationship is a table and its attributes are part of the columns of the table; also the Keys of the entities involved in the relation become columns and they are flagged as Foreign Keys (FK). The Key of the table must be composed by the FKs.\\
 
-Let's put this in practice:
-\vskip 20pt
-\begin{minipage}{0.45\textwidth}
+Let's put this in practice:\\
+\bigskip
+
+\noindent \begin{minipage}[t]{0.48\textwidth}
 	PERSONS
 	\begin{table}[H]
 		\centering
@@ -48,26 +59,29 @@ Let's put this in practice:
 	\end{table}
 	\texttt{PERSONS(\underline{CF}, Name, Birth date)}
 \end{minipage}
-\hspace{.1\textwidth}
-\begin{minipage}{.45\textwidth}
+\hspace{.04\textwidth}
+\begin{minipage}[t]{.48\textwidth}
 	CARS
 	\begin{table}[H]
 		\centering
 		\subimport{assets/tables/}{phc-cars}
 	\end{table}
 	\texttt{CARS(\underline{Targa}, Brand, Color)}
-\end{minipage}
+\end{minipage}\\
+
+\bigskip
+That was pretty easy, wasn't it? Now it's time to draw the relation table:
 \vskip 20pt
-That was pretty easy, wasn't it?\\
-Now it's time to draw the relation table:
-\vskip 20pt
-\begin{minipage}{.7\textwidth}
+
+\begin{center}
 	HAS
 	\begin{table}[H]
+		\centering
 		\subimport{assets/tables/}{phc-has}
 	\end{table}
 	\texttt{HAS(\underline{CF, Targa}, Date)}
-\end{minipage}
+\end{center}
+
 \vskip 20pt
 Well, that's clear. Now it's time to mix things up a little bit.
 What if a car can't be owned by different people? (see \ref{diagram1_01})
@@ -83,15 +97,23 @@ Each many to one relationship become a relation as in Rule \#2 but the Key is \e
 
 Let's see this rule applied:
 \vskip 20pt
-\begin{minipage}{.8\textwidth}
-	HAS
-	\begin{table}[H]
-		\subimport{assets/tables/}{phc-has_v1}
-	\end{table}
+\begin{minipage}[c]{0.45\textwidth}
+	\begin{center}
+		HAS
+		\begin{table}[H]
+			\centering
+			\subimport{assets/tables/}{phc-has_v1}
+		\end{table}
+	\end{center}
+\end{minipage}
+\hspace{.05\textwidth}
+\begin{minipage}[c]{0.50\textwidth}
 	\texttt{HAS(CF, \underline{Targa}, Date)}\\
 	\tab[.4cm] \texttt{	CF Foreign Key to PERSONS}\\
 	\tab[.4cm] \texttt{	Targa Foreign Key to CARS}
 \end{minipage}
+
+
 \vskip 20pt
 And what if we want the car to have also at least one owner? (see \ref{diagram1_02})
 \begin{figure}[H]
@@ -107,11 +129,17 @@ Each many to one and total partecipation relationship does not become a relation
 Therefore in our case the solution is to delete the HAS table and add two columns to the CARS table, one for \texttt{Date} and one for \texttt{CF}, which will be a FK and will be requested to be \emph{not null}.
 That's the representation in RM:
 \vskip 20pt
-\begin{minipage}{.8\textwidth}
-	CARS
-	\begin{table}[H]
-		\subimport{assets/tables/}{phc-cars_v2}
-	\end{table}
+\noindent \begin{minipage}[c]{0.42\textwidth}
+	\begin{center}
+		CARS
+		\begin{table}[H]
+			\centering
+			\subimport{assets/tables/}{phc-cars_v2}
+		\end{table}
+	\end{center}
+\end{minipage}
+\hspace{.01\textwidth}
+\begin{minipage}[c]{0.57\textwidth}
 	\texttt{CARS(\underline{Targa}, Brand, Color, CF, Date)}\\
 	\tab[.4cm] \texttt{	CF not null}\\
 	\tab[.4cm] \texttt{	CF Foreign Key to PERSONS}
@@ -123,6 +151,7 @@ Now we cannot do that because, being the Key, \texttt{Targa} cannot appear twice
 The solution here is to use also \texttt{Date} as a Key.
 But that's not feasible because, as we stated in Rule \#2, only Keys of the entities are used as Key in the relation table, and \texttt{Date} is not an entity; hence we have to redesign our diagram as this:
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_03.png}
 	\caption{Now Date is an entity}
 	\label{diagram1_03}
@@ -131,20 +160,25 @@ But that's not feasible because, as we stated in Rule \#2, only Keys of the enti
 
 Now we want every rent to have an insurance, so we have to create a new entity called INSURANCES and link it to the RENT relation as this:
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_04.png}
 	\caption{We added INSURANCES as an entity}
+	\label{diagram1_04}
+\end{figure}
+\hspace{0.25\textwidth}
+\begin{minipage}{0.5\textwidth}
 	\texttt{RENT(\underline{Owner, Car, Name}, date)}\\
 		\tab[.8cm] \texttt{Owner FK to PERSONS}\\
 		\tab[.8cm] \texttt{Car FK to CARS}\\
 		\tab[.8cm] \texttt{Name FK to INSURANCES}
-	\label{diagram1_04}
-\end{figure}
+\end{minipage}
 \vskip 20pt
 
 And now we decide that the insurance is no more necessary for a rent, how do we set it as a field that can be \emph{null}?
 We have to link it to RENT with a relationship.
 But we can't link two relationships together: we must aggregate PERSONS, RENT and CARS so that we can treat this set as an entity and then we can link to the aggregated entity the INSURANCES with another relationship (see \ref{diagram1_05}).
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_05.png}
 	\caption{Now PERSONS, RENT and CARS are aggregated}
 	\label{diagram1_05}
@@ -164,6 +198,7 @@ Keeping in mind Rule \#2 we have that the Keys of a relationship must be the Key
 \vskip 10pt
 And now the last question about this example: what's the difference between \ref{diagram1_04} and \ref{diagram1_06}?
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram1_06.png}
 	\caption{Note the particular form of the diagram}
 	\label{diagram1_06}
@@ -173,11 +208,11 @@ The difference is:
 	\item In \ref{diagram1_04} you \emph{must} use \texttt{Name} as Key in the RENT table, because INSURANCES is an entity involved in RENT relation (Rule \#2); therefore a person can rent the same car multiple times given that he or she uses a different insurance.\\
 	\item In \ref{diagram1_06} you don't have to use \texttt{Name} as Key in the RENT table, therefore it is not possible for a person to rent the same car with two different insurances (even if the insurance changes the Key remains the same).
 \end{itemize}
-\newpage
 
 \section{Let's talk about inheritance}
 Now it's time to see a little bit of inheritance, as before we're starting with an example:
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=\textwidth,keepaspectratio]{diagram2_00.png}
 	\caption{An example of inheritance}
 	\label{diagram2_00}
@@ -215,6 +250,7 @@ There are three ways to translate ER inheritance into RM:
 \section{Weak Entities}
 Now let's take a quick look at the translation of Weak Entities, i.e. entities that cannot exist on their own.\\
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram4_00.png}
 	\caption{E-mail cannot exist if domain doesn't}
 	\label{diagram4_00}
@@ -238,6 +274,7 @@ For instance, let's consider the following statements:\\\\
 \vskip 5pt
 B has two Foreign Keys, one points to A and the other one points to C, so B is a relationship between A and C.
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_00.png}
 	\caption{Justa figure}
 	\label{diagram3_00}
@@ -252,6 +289,7 @@ But now we change it up just a little, and we want something like this:\\\\
 \vskip 5pt
 It looks similar, but it's not the same: \texttt{v} is not a Key of B anymore, so we can have multiple \texttt{v}s for just one \texttt{u}, so the relationship from C to A has become a many to one relationship.
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram3_01.png}
 	\caption{Justa nother figure}
 	\label{diagram3_01}
@@ -282,6 +320,7 @@ The intresting detail in this case is that HAS2 has this FK: '\texttt{(cf, cif) 
 We know that it's impossible to have a relation linked to another, therefore it's impossible to have a link between HAS and HAS2; this implies that there is an aggregation between PERSONS, CARS and HAS.\\
 Let's see what I'm babbling about:
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_00.png}
 	\label{diagram6_00}
 \end{figure}
@@ -294,6 +333,7 @@ Let's see what I'm babbling about:
 In this case the peculiarity is that the element STUDENT has \texttt{mat} as only Key, and it's also a FK to PERSON, this means that there must be an IS-A between the two entities; let's check the ERD:
 
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_01.png}
 	\label{diagram6_01}
 \end{figure}
@@ -307,6 +347,7 @@ This example is slightly different from the previous one, but its meaning is opp
 This means that a relation is involved, and this relation has a precise form: it is a many to one, in fact a STUDENT can be linked only to one (at most one) PERSON; in contrast we don't have any limitation for the PERSON side of the relation.
 
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_02.png}
 	\label{diagram6_02}
 \end{figure}
@@ -320,6 +361,7 @@ In this last case we see that the Key of STUDENT is composed by \texttt{mat} and
 The fact that the Key of STUDENT is in part composed by a FK means that STUDENT is a Weak Entity; therefore the ERD is the following one:
 
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.8\textwidth,keepaspectratio]{diagram6_03.png}
 	\label{diagram6_03}
 \end{figure}
